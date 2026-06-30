@@ -13,6 +13,16 @@ export const getStocks = async () => {
   return response.data;
 };
 
+export const getLiveStocks = async () => {
+  const response = await axios.get(`${API_URL}/live`, authHeader());
+  return response.data;
+};
+
+export const searchSymbols = async (query) => {
+  const response = await axios.get(`${API_URL}/search?q=${encodeURIComponent(query)}`, authHeader());
+  return response.data;
+};
+
 export const addStock = async (stockData) => {
   const response = await axios.post(API_URL, stockData, authHeader());
   return response.data;

@@ -17,6 +17,8 @@ function StockList({ stocks, onStockDeleted }) {
           <th className="p-2">Symbol</th>
           <th className="p-2">Quantity</th>
           <th className="p-2">Buy Price</th>
+          <th className="p-2">Current Price</th>
+          <th className="p-2">Profit/Loss</th>
           <th className="p-2">Purchase Date</th>
           <th className="p-2">Action</th>
         </tr>
@@ -27,6 +29,24 @@ function StockList({ stocks, onStockDeleted }) {
             <td className="p-2 font-medium">{stock.symbol}</td>
             <td className="p-2">{stock.quantity}</td>
             <td className="p-2">${stock.buyPrice}</td>
+            <td className="p-2">
+              {stock.currentPrice != null
+                ? `$${stock.currentPrice.toFixed(2)}`
+                : 'N/A'}
+            </td>
+            <td
+              className={`p-2 font-medium ${
+                stock.profitLoss > 0
+                  ? 'text-green-600'
+                  : stock.profitLoss < 0
+                  ? 'text-red-600'
+                  : ''
+              }`}
+            >
+              {stock.profitLoss != null
+                ? `${stock.profitLoss > 0 ? '+' : ''}$${stock.profitLoss.toFixed(2)} (${stock.profitLossPercent.toFixed(1)}%)`
+                : 'N/A'}
+            </td>
             <td className="p-2">
               {new Date(stock.purchaseDate).toLocaleDateString()}
             </td>

@@ -78,4 +78,24 @@ const getPortfolioWithLivePrices = async (req, res) => {
   }
 };
 
-module.exports = { getStocks, addStock, deleteStock, getPortfolioWithLivePrices };
+const searchSymbols = async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q) {
+      return res.json([]);
+    }
+    const results = await yahooFinance.search(q);
+    const formatted = results.quotes
+      .filter((item) => item.symbol)
+      .map((item) => ({
+        symbol: item.symbol,
+        name: item.shortname || item.longname || '',
+        type: item.quoteType || '',
+      }));
+    res.json(formatted);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { getStocks, addStock, deleteStock, getPortfolioWithLivePrices, searchSymbols };

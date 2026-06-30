@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getStocks } from '../services/stockService';
+import { getLiveStocks } from '../services/stockService';
 import StockForm from './StockForm';
 import StockList from './StockList';
 import { Pie } from 'react-chartjs-2';
@@ -12,7 +12,7 @@ function Dashboard() {
 
   const fetchStocks = async () => {
     try {
-      const data = await getStocks();
+      const data = await getLiveStocks();
       setStocks(data);
     } catch (error) {
       console.error('Error fetching stocks:', error);
@@ -41,11 +41,13 @@ function Dashboard() {
 
       <StockForm onStockAdded={fetchStocks} />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-        <StockList stocks={stocks} onStockDeleted={fetchStocks} />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+        <div className="lg:col-span-2 overflow-x-auto">
+          <StockList stocks={stocks} onStockDeleted={fetchStocks} />
+        </div>
 
         {stocks.length > 0 && (
-          <div className="max-w-xs">
+          <div className="max-w-xs mx-auto">
             <Pie data={chartData} />
           </div>
         )}
