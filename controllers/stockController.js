@@ -1,4 +1,6 @@
 const Stock = require('../models/Stock');
+const YahooFinance = require('yahoo-finance2').default;
+const yahooFinance = new YahooFinance();
 
 const getStocks = async (req, res) => {
   try {
@@ -38,4 +40,42 @@ const deleteStock = async (req, res) => {
   }
 };
 
-module.exports = { getStocks, addStock, deleteStock };
+const getPortfolioWithLivePrices = async (req, res) => {
+  try {
+    const stocks = await Stock.find({ user: req.user._id });
+
+    const enrichedStocks = await Promise.all(
+      stocks.map(async (stock) => {
+        try {
+          const quote = await yahooFinance.quote(stock.symbol);
+          const currentPrice = quote.regularMarketPrice;
+          const investedValue = stock.quantity * stock.buyPrice;
+          const currentValue = stock.quantity * currentPrice;
+          const profitLoss = currentValue - investedValue;
+          const profitLossPercent = (profitLoss / investedValue) * 100;
+
+          return {
+            ...stock.toObject(),
+            currentPrice,
+            currentValue,
+            profitLoss,
+            profitLossPercent,
+          };
+        } catch (err) {
+          console.log('Yahoo Finance error for', stock.symbol, ':', err.message);
+          return {
+            ...stock.toObject(),
+            currentPrice: null,
+            error: 'Price not found',
+          };
+        }
+      })
+    );
+
+    res.json(enrichedStocks);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { getStocks, addStock, deleteStock, getPortfolioWithLivePrices };
