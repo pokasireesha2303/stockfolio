@@ -2,7 +2,7 @@ const Stock = require('../models/Stock');
 
 const getStocks = async (req, res) => {
   try {
-    const stocks = await Stock.find();
+    const stocks = await Stock.find({ user: req.user._id });
     res.json(stocks);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -11,7 +11,7 @@ const getStocks = async (req, res) => {
 
 const addStock = async (req, res) => {
   try {
-    const newStock = new Stock(req.body);
+    const newStock = new Stock({ ...req.body, user: req.user._id });
     const savedStock = await newStock.save();
     res.status(201).json(savedStock);
   } catch (error) {
@@ -21,7 +21,17 @@ const addStock = async (req, res) => {
 
 const deleteStock = async (req, res) => {
   try {
-    await Stock.findByIdAndDelete(req.params.id);
+    const stock = await Stock.findById(req.params.id);
+
+    if (!stock) {
+      return res.status(404).json({ message: 'Stock not found' });
+    }
+
+    if (stock.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: 'Not authorized to delete this stock' });
+    }
+
+    await stock.deleteOne();
     res.json({ message: 'Stock deleted' });
   } catch (error) {
     res.status(500).json({ message: error.message });
