@@ -3,7 +3,6 @@
 ## Overview
 Stockfolio is a full-stack stock portfolio tracker that lets users sign up, log in, and manage their personal stock and crypto holdings. Each user's portfolio is private and protected with JWT authentication. The app fetches live market prices via Yahoo Finance, calculates real-time profit/loss, and includes a search/autocomplete feature for finding the correct ticker symbol when adding a holding.
 
-This project was built as a learning project, with reference to [Mourya-2602/portfolio_tracker](https://github.com/Mourya-2602/portfolio_tracker), used with permission and credited here.
 
 ## Features
 
