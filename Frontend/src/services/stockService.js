@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getToken } from './authService';
 
-const API_URL = 'http://localhost:5000/api/stocks';
+const API_URL = 'https://stockfolio-lv50.onrender.com/api/stocks';
 
 const authHeader = () => {
   const token = getToken();

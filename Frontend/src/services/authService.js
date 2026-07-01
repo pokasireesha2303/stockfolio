@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/auth';
+const API_URL = 'https://stockfolio-lv50.onrender.com/api/auth';
 
 export const signup = async (name, email, password) => {
   const response = await axios.post(`${API_URL}/signup`, { name, email, password });
