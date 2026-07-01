@@ -1,20 +1,61 @@
 # Stockfolio
 
-A full-stack stock portfolio tracker built with the MERN stack. Users can add, view, and delete stock holdings, with a dashboard showing portfolio value through an interactive pie chart.
+## Live Demo
+- Frontend: https://stockfolio-woad.vercel.app
+- Backend API: https://stockfolio-lv50.onrender.com
+
+## Overview
+Stockfolio is a full-stack stock portfolio tracker that lets users sign up, log in, and manage their personal stock and crypto holdings. Each user's portfolio is private and protected with JWT authentication. The app fetches live market prices via Yahoo Finance, calculates real-time profit/loss, and includes a search/autocomplete feature for finding the correct ticker symbol when adding a holding.
+
 
 ## Features
-- Add stocks with symbol, quantity, and buy price
-- View all holdings in a table
-- Delete holdings
-- Visual breakdown of portfolio via pie chart
+
+### Authentication
+- User signup and login with hashed passwords (bcrypt)
+- JWT-based authentication on all stock routes
+- Each user can only view, add, or delete their own stocks
+
+### Frontend
+- Built with React, Vite, and Tailwind CSS
+- Login/Signup forms
+- Dashboard with live stock prices, profit/loss table, and pie chart
+- Symbol search with autocomplete powered by Yahoo Finance
+- Add and delete stock holdings
+
+### Backend
+- RESTful API built with Node.js and Express
+- JWT-protected routes for auth and stock CRUD
+- Live price and profit/loss calculation using yahoo-finance2
+- Symbol search endpoint using Yahoo Finance search API
+
+### Database
+- MongoDB via MongoDB Atlas
+- User schema: name, email, hashed password
+- Stock schema: symbol, quantity, buy price, purchase date, linked to user
 
 ## Tech Stack
-- **Frontend:** React, Vite, Tailwind CSS, Chart.js
-- **Backend:** Node.js, Express
-- **Database:** MongoDB Atlas
+- Frontend: React, Vite, Tailwind CSS, Chart.js
+- Backend: Node.js, Express, Mongoose
+- Database: MongoDB Atlas
+- Auth: JWT, bcryptjs
+- Market data: yahoo-finance2
 
-## Acknowledgements
-This project was built as a learning exercise, inspired by and referencing
-[portfolio_tracker by Mourya-2602](https://github.com/Mourya-2602/portfolio_tracker),
-used with permission. The implementation, structure, and additional features
-in this repo are my own work.
+## Steps to Run Locally
+
+### Backend Setup
+1. Clone the repo and install dependencies:
+   git clone https://github.com/pokasireesha2303/stockfolio.git
+   cd stockfolio
+   npm install
+2. Create a .env file with:
+   MONGO_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret
+   PORT=5000
+3. Start the server:
+   node server.js
+
+### Frontend Setup
+1. cd Frontend
+2. npm install
+3. npm run dev
+4. Open http://localhost:5173
