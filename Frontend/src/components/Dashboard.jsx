@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getLiveStocks } from '../services/stockService';
+import { getPortfolioInsights } from '../services/aiService';
 import StockForm from './StockForm';
 import StockList from './StockList';
 import { Pie } from 'react-chartjs-2';
@@ -9,6 +10,9 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 function Dashboard() {
   const [stocks, setStocks] = useState([]);
+  const [insights, setInsights] = useState('');
+  const [loadingInsights, setLoadingInsights] = useState(false);
+  const [insightsError, setInsightsError] = useState('');
 
   const fetchStocks = async () => {
     try {
@@ -22,6 +26,20 @@ function Dashboard() {
   useEffect(() => {
     fetchStocks();
   }, []);
+
+  const handleGetInsights = async () => {
+    setLoadingInsights(true);
+    setInsightsError('');
+    try {
+      const data = await getPortfolioInsights(stocks);
+      setInsights(data.insights);
+    } catch (error) {
+      setInsightsError('Failed to get AI insights. Please try again.');
+      console.error('Error fetching insights:', error);
+    } finally {
+      setLoadingInsights(false);
+    }
+  };
 
   const chartData = {
     labels: stocks.map((s) => s.symbol),
@@ -52,6 +70,23 @@ function Dashboard() {
           </div>
         )}
       </div>
+
+      {stocks.length > 0 && (
+        <div className="mt-8 p-6 bg-gray-50 rounded-lg border">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">AI Portfolio Insights</h2>
+            <button
+              onClick={handleGetInsights}
+              disabled={loadingInsights}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+            >
+              {loadingInsights ? 'Analyzing...' : 'Get AI Insights'}
+            </button>
+          </div>
+          {insightsError && <p className="text-red-500">{insightsError}</p>}
+          {insights && <p className="whitespace-pre-line text-gray-700">{insights}</p>}
+        </div>
+      )}
     </div>
   );
 }
